@@ -10,6 +10,7 @@ RUN go build -o ${APP_NAME}
 
 FROM busybox
 COPY --from=build /go/src/project/${APP_NAME} /app/
+EXPOSE 8080
 ENTRYPOINT ["/app/httpserver"]
 
 # 构建命令
