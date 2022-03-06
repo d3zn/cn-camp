@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpserver
+  labels:
+    app: httpserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpserver
+  template:
+    metadata:
+      labels:
+        app: httpserver
+    spec:
+      containers:
+        - name: httpserver
+          image: d3zn/httpserver:v0.0.2
+          ports:
+            - containerPort: 8080
+      startupProbe: # 启动探测
+        exec:
+          command:
+            - cat
+            - /tmp/healthy
+        initialDelaySeconds: 1
+        periodSeconds: 2
+      readinessProbe: # 就绪探测
+        httpGet:
+          path: /health
+          port: 8080
+          scheme: HTTP
+        initialDelaySeconds: 5
+        periodSeconds: 3
+      livenessProbe: # 存活检测
+        httpGet:
+          path: /health
+          port: 8080
+          scheme: HTTP
+        initialDelaySeconds: 5
+        periodSeconds: 3

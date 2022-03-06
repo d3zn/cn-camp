@@ -16,9 +16,10 @@ func NewController(service Service) *Controller {
 }
 
 func (c *Controller) Header(w http.ResponseWriter, r *http.Request) {
+	c.s.Header()
 	w.Header().Add("name", r.Header.Get("Name"))
 	w.WriteHeader(http.StatusOK)
-
+	return
 }
 
 func (c *Controller) Env(w http.ResponseWriter, r *http.Request) {
@@ -45,10 +46,14 @@ func (c *Controller) Env(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add(key, env)
 		_, _ = fmt.Fprintf(w, "%s=%s", key, env)
 	}
-
+	return
 }
 
 func (c *Controller) Health(w http.ResponseWriter, r *http.Request) {
-	_, _ = fmt.Fprintf(w, c.s.Health())
-	w.WriteHeader(http.StatusOK)
+	if err := c.s.Health(); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	_, _ = fmt.Fprintf(w, "health")
+	return
 }
