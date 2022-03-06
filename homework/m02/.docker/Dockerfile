@@ -8,11 +8,10 @@ ENV GOOS=linux
 ENV GOARCH=amd64
 RUN go build -o ${APP_NAME}
 
-FROM scratch
-WORKDIR = /app
+FROM busybox
 COPY --from=build /go/src/project/${APP_NAME} /app/
 ENTRYPOINT ["/app/httpserver"]
 
 # 构建命令
-# cd cn-camp/homewor/m02
-# docker build -f ./docker/Dockerfile -t httpserver:v0.1 .
+# cd cn-camp/homework/m02
+# docker build -f ./.docker/Dockerfile -t httpserver:v0.1 .
