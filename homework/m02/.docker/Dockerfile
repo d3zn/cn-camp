@@ -6,6 +6,7 @@ COPY . .
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
+ENV GOPROXY=https://goproxy.cn,direct
 RUN go build -o ${APP_NAME}
 
 FROM busybox
