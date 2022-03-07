@@ -1,7 +1,0 @@
-service:
-  port: 8080
-  mode: release
-
-log:
-  level: debug
-  logfile: log/httpserver.log
