@@ -18,7 +18,7 @@ spec:
         - name: httpserver
           image: d3zn/httpserver:v0.0.5
           ports:
-            - containerPort: 8081
+            - containerPort: 8080
           resources: # 资源配额
             limits:
               memory: "200Mi"

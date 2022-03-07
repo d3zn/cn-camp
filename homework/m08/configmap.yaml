@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: httpserver
+
+data:
+  conf.yaml: |
+    service:
+      port: 8080
+      mode: release
+
+    log:
+      level: debug
+      logfile: log/httpserver.log
