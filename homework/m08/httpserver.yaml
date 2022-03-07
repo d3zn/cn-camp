@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: httpserver
-          image: d3zn/httpserver:v0.0.2
+          image: d3zn/httpserver:v0.0.5
           ports:
             - containerPort: 8081
           resources: # 资源配额
