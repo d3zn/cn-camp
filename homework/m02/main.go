@@ -6,8 +6,8 @@ import (
 	"m02/quark"
 	"m02/service"
 	"net/http"
-	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 )
@@ -16,6 +16,10 @@ func main() {
 	// Create context that listens for the interrupt signal from the OS.
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
+	conf, err := service.LoadConfig()
+	if err != nil {
+		log.Fatalf("load config err: %v", err)
+	}
 	startTime := time.Now()
 	router := quark.New()
 	router.Use(quark.AccessLog) // middleware
@@ -24,15 +28,12 @@ func main() {
 	c.Register(router)
 
 	srv := http.Server{
-		Addr:    ":8080",
+		Addr:    ":" + strconv.Itoa(conf.Service.Port),
 		Handler: router,
-	}
-	time.Sleep(5 * time.Second)
-	if _, err := os.Create("/tmp/healthy"); err != nil {
-		log.Fatalf("init err: %v", err)
 	}
 
 	go func() {
+		log.Printf("mode: %s", conf.Service.Mode)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen err: %v", err)
 		}

@@ -18,25 +18,42 @@ spec:
         - name: httpserver
           image: d3zn/httpserver:v0.0.2
           ports:
-            - containerPort: 8080
-      startupProbe: # 启动探测
-        exec:
-          command:
-            - cat
-            - /tmp/healthy
-        initialDelaySeconds: 1
-        periodSeconds: 2
-      readinessProbe: # 就绪探测
-        httpGet:
-          path: /health
-          port: 8080
-          scheme: HTTP
-        initialDelaySeconds: 5
-        periodSeconds: 3
-      livenessProbe: # 存活检测
-        httpGet:
-          path: /health
-          port: 8080
-          scheme: HTTP
-        initialDelaySeconds: 5
-        periodSeconds: 3
+            - containerPort: 8081
+          resources: # 资源配额
+            limits:
+              memory: "200Mi"
+            requests:
+              memory: "100Mi"
+#          args:
+#            - /bin/sh
+#            - -c
+#            - sleep 5; touch /tmp/healthy
+#          startupProbe: # 启动探测
+#            exec:
+#              command:
+#                - cat
+#                - /tmp/healthy
+#            initialDelaySeconds: 1
+#            periodSeconds: 2
+          readinessProbe: # 就绪探测
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 3
+          livenessProbe: # 存活检测
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 3
+          volumeMounts:
+            - name: httpserver-conf
+              mountPath: /app/conf/   #挂载点不存在,Pod会自动创建.
+              readOnly: true
+      volumes:
+        - name: httpserver-conf        #定义存储卷的名字为httpserver-conf
+          configMap:
+            name: httpserver
