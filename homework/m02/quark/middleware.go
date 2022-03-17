@@ -2,7 +2,9 @@ package quark
 
 import (
 	"log"
+	"net"
 	"net/http"
+	"strings"
 )
 
 type Middleware func(http.Handler) http.Handler
@@ -35,6 +37,18 @@ func AccessLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logW := NewLogResponseWriter(w)
 		next.ServeHTTP(logW, r)
-		log.Printf("remote: %s, code: %d", r.RemoteAddr, logW.statusCode)
+		clientIP := r.Header.Get("X-Forwarded-For")
+		clientIP = strings.TrimSpace(strings.Split(clientIP, ",")[0])
+		if clientIP == "" {
+			clientIP = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
+		}
+		if clientIP != "" {
+			log.Printf("remote: %s | code: %d | %s | %s", clientIP, logW.statusCode, r.Method, r.URL)
+			return
+		}
+		if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
+			log.Printf("remote: %s | %d | %s | %s", ip, logW.statusCode, r.Method, r.URL)
+
+		}
 	})
 }

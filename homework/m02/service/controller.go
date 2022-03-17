@@ -57,3 +57,10 @@ func (c *Controller) Health(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprintf(w, "health")
 	return
 }
+
+func (c *Controller) Random(w http.ResponseWriter, r *http.Request) {
+	delay, _ := c.s.Random()
+	w.WriteHeader(http.StatusOK)
+	_, _ = fmt.Fprintf(w, "<h1>%s<h1/>", delay)
+	return
+}

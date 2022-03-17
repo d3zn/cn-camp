@@ -12,3 +12,5 @@ data:
     log:
       level: debug
       logfile: log/httpserver.log
+
+    crash_test: false

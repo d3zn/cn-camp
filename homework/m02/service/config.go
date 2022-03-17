@@ -18,6 +18,7 @@ type Config struct {
 		Level   string `json:"level" yaml:"level"`
 		LogFile string `json:"logfile" yaml:"logfile"`
 	} `json:"log" yaml:"log"`
+	CrashTest bool `json:"crash_test" yaml:"crash_test"`
 }
 
 func LoadConfig() (*Config, error) {

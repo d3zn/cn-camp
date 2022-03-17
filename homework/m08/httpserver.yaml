@@ -57,3 +57,16 @@ spec:
         - name: httpserver-conf        #定义存储卷的名字为httpserver-conf
           configMap:
             name: httpserver
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpserver
+spec:
+  selector:
+    app: httpserver
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

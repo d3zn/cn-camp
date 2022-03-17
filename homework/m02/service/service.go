@@ -2,7 +2,9 @@ package service
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -12,10 +14,12 @@ type Service interface {
 	Header()
 	Env(key string) (string, error)
 	Health() error
+	Random() (string, error)
 }
 
 type service struct {
 	startTime time.Time
+	crash     bool
 }
 
 func (s *service) Header() {
@@ -35,6 +39,9 @@ func (s *service) Env(key string) (string, error) {
 }
 
 func (s *service) Health() error {
+	if !s.crash {
+		return nil
+	}
 	d := time.Since(s.startTime)
 	if d.Seconds() > 60 {
 		return fmt.Errorf("server down!")
@@ -42,8 +49,16 @@ func (s *service) Health() error {
 	return nil
 }
 
-func NewService(startTime time.Time) *service {
+func (s *service) Random() (string, error) {
+	rand.Seed(time.Now().Unix())
+	delay := rand.Intn(2000)
+	time.Sleep(time.Millisecond * time.Duration(delay))
+	return strconv.Itoa(delay) + "ms", nil
+}
+
+func NewService(startTime time.Time, crash bool) *service {
 	return &service{
 		startTime: startTime,
+		crash:     crash,
 	}
 }

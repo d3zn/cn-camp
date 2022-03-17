@@ -23,7 +23,7 @@ func main() {
 	startTime := time.Now()
 	router := quark.New()
 	router.Use(quark.AccessLog) // middleware
-	s := service.NewService(startTime)
+	s := service.NewService(startTime, conf.CrashTest)
 	c := service.NewController(s)
 	c.Register(router)
 
