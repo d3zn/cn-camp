@@ -1,11 +1,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: httpserver-80
+  annotations:
+    cert-manager.io/issuer: letsencrypt-prod
+  name: httpserver-443
 spec:
   ingressClassName: nginx
   rules:
-    - host: m08.d3zn.lol
+    - host: m08-ssl.d3zn.lol
       http:
         paths:
           - backend:
@@ -15,3 +17,7 @@ spec:
                   number: 8080
             path: /
             pathType: Prefix
+  tls:
+    - hosts:
+        - m08-ssl.d3zn.lol
+      secretName: m08-tls
