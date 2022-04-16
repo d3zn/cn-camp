@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"m02/metrics"
 	"math/rand"
 	"os"
 	"strconv"
@@ -50,7 +51,9 @@ func (s *service) Health() error {
 }
 
 func (s *service) Random() (string, error) {
-	rand.Seed(time.Now().Unix())
+	timer := metrics.NewTimer()
+	defer timer.ObserveTotal()
+
 	delay := rand.Intn(2000)
 	time.Sleep(time.Millisecond * time.Duration(delay))
 	return strconv.Itoa(delay) + "ms", nil

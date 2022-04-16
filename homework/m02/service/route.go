@@ -1,6 +1,8 @@
 package service
 
-import "m02/quark"
+import (
+	"m02/quark"
+)
 
 func (c *Controller) Register(engine *quark.Engine) {
 	engine.GET("/header", c.Header)

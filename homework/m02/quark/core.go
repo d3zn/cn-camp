@@ -3,6 +3,8 @@ package quark
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type Engine struct {
@@ -15,6 +17,8 @@ func New() *Engine {
 		w.WriteHeader(http.StatusOK)
 		_, _ = fmt.Fprintln(w, "hello world")
 	})}
+	handlerMap["/metrics"] = map[string]http.Handler{http.MethodGet: promhttp.Handler()}
+
 	return &Engine{
 		Routers{
 			m:          nil,

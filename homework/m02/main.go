@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"m02/metrics"
 	"m02/quark"
 	"m02/service"
 	"net/http"
@@ -26,6 +27,7 @@ func main() {
 	s := service.NewService(startTime, conf.CrashTest)
 	c := service.NewController(s)
 	c.Register(router)
+	metrics.Register()
 
 	srv := http.Server{
 		Addr:    ":" + strconv.Itoa(conf.Service.Port),
